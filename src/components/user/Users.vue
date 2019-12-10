@@ -96,24 +96,22 @@
   </div>
 </template>
 <script>
-import { sync } from 'glob'
-import { async } from 'q'
 export default {
   data(){
     //自定义定义验证邮箱的规则
-    var checkEmail = (rule,value,callback) =>{
+    var checkEmail = (rule,value,callback) => {
       //验证邮箱的正则表达式
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
-      if(regEmail.test(value)){
+      if (regEmail.test(value)) {
         return callback()
       }
       callback(new Error('请输入合法的邮箱'))
     }
     //自定义定义验证手机的规则
-    var checkMobile = (rule,value,callback) =>{
+    var checkMobile = (rule,value,callback) => {
       //验证手机号的正则表达式
       const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-      if(regMobile.test(value)){
+      if (regMobile.test(value)) {
         return callback()
       }
       callback(new Error('请输入合法的手机号'))
@@ -165,7 +163,7 @@ export default {
     }
   },
   methods:{
-      async getUserList(){
+      async getUserList () {
         const { data:res } = await this.$http.get('users',{ params:this.queryInfo })
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
@@ -179,31 +177,31 @@ export default {
         this.getUserList()
       },
       //监听页码值改变的事件
-      handleCurrentChange(pagenum) {//当前页
+      handleCurrentChange(pagenum) {
         this.queryInfo.pagenum = pagenum
         this.getUserList()
       },
       //监听swith状态变化
-      async userStateChanged(userinfo){
+      async userStateChanged(userinfo) {
         const { data:res } = await this.$http.put(`users/${
           userinfo.id} /state/${userinfo.mg_state}`)
-        if(res.meta.status !== 200){
-          userinfo.mg_state =! userinfo.mg_state
+        if (res.meta.status !== 200) {
+          userinfo.mg_state = ! userinfo.mg_state
           return this.$message.error(res.meta.msg)
         }
         this.$message.success(res.meta.msg)
       },
       //监听添加用户对话框的关闭事件
-      addDialogClosed(){
+      addDialogClosed() {
         this.$refs.addFormRef.resetFields()
       },
       //点击按钮,添加用户
-      addUser(){
+      addUser() {
         this.$refs.addFormRef.validate(async val => {
           if (!val) return
-          const { data:res} = await this.$http.post('/users',this.addForm)
+          const { data:res } = await this.$http.post('/users',this.addForm)
           //可以发起添加用户的请求
-          if(res.meta.status !== 201){
+          if (res.meta.status !== 201) {
             return this.$message.error(res.meta.msg)
           }
           this.$message.success(res.meta.msg)
@@ -214,28 +212,28 @@ export default {
         })
       },
       //监听修改用户对话框的关闭事件
-      editDialogClosed(){
+      editDialogClosed() {
         this.$refs.editFormRef.resetFields()
       },
        //点击按钮,修改用户
-      async showEditDialog(id){
+      async showEditDialog(id) {
         const { data:res } = await this.$http.get('users/' + id)
-        if(res.meta.status !== 200){
+        if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
         }
         this.editForm = res.data
         this.editDialogVisible = true
       },
       //修改用户信息
-      editUserInfo(id){
+      editUserInfo(id) {
         //用户信息修改预验证
         this.$refs.editFormRef.validate(async valid => {
-            if(!valid) return
+            if (!valid) return
             const { data:res } = await this.$http.put('users/' + this.editForm.id,{
               email:this.editForm.email,
               mobile:this.editForm.mobile
             })
-            if(res.meta.status !== 200){
+            if (res.meta.status !== 200) {
               return this.$message.error(res.meta.msg)
             }
             //关闭对话框
@@ -244,21 +242,20 @@ export default {
             this.getUserList()
             //数据修改成功
             this.$message.success(res.meta.msg)
-
         })
       },
       //删除用户信息
-      async delUserById(id){
+      async delUserById(id) {
         const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).catch(err => err)
-        if( confirmResult !== 'confirm'){
+        if (confirmResult !== 'confirm') {
           return this.$message.info('已取消删除')
         }
         const { data:res } = await this.$http.delete('users/' + id)
-        if(res.meta.status !== 200) {
+        if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
         }
         this.$message.success(res.meta.msg)
@@ -266,7 +263,7 @@ export default {
         this.getUserList()
       }
   },
-  created(){
+  created () {
     this.getUserList()
   }
 }
