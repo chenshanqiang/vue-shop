@@ -311,7 +311,7 @@ export default {
           `users/${this.userInfo.id}/role`,{
           rid:this.selectedRoleId
         })
-        if(res.meta.status !== 200) {
+        if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
         }
         this.$message.success('更新角色成功！')
