@@ -58,7 +58,7 @@ Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
 
-// 将弹框组件挂载到vue原型组件上
+// 将弹框组件挂载到vue原型对象上
 Vue.prototype.$message = Message
-    // 将弹框组件挂载到vue原型组件上
+    // 将弹框组件挂载到vue原型对象上
 Vue.prototype.$confirm = MessageBox.confirm
