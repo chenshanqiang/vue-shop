@@ -115,7 +115,7 @@ export default {
         // 添加分类表单规则对象
         addCateFormRules:{
           cat_name:[
-            { required: true, message: '请输入分类名称', trigger: 'blur' },
+            { required: true, message: '请输入分类名称', trigger: 'blur' }
           ]
         },
         parentCateList:[]
@@ -152,13 +152,12 @@ export default {
     },
     // 获得父级分类的数据列表
     async getParentCateList() {
-      const { data:res } = await this.$http.get('categories',{params:{type:2}})
-      if(res.meta.status !==200) {
+      const { data:res } = await this.$http.get('categories',{ params:{ type:2 } })
+      if (res.meta.status !== 200) {
         return this.$message.error(res.meta.msg)
       }
       console.log(res.data)
       this.parentCateList = res.data
-    
     }
   }
 }
