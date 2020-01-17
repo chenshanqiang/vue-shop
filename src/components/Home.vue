@@ -12,8 +12,8 @@
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边导航栏 -->
         <!-- 使用unique属性时，要绑定该属性，否则只能是unique-opened-->
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" 
-        :unique-opened="true"  :collapse="isCollapse" :collapse-transition="false" router 
+        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF"
+        :unique-opened="true"  :collapse="isCollapse" :collapse-transition="false" router
         :default-active="activePath">
           <!-- 一级导航 -->
           <el-submenu :index="item.id+''" v-for="item in menulist" :key="item.id">
@@ -22,8 +22,8 @@
               <span>{{item.authName}}</span>
             </template>
             <!-- 二级导航 -->
-              <el-menu-item :index="'/' + subItem.path +''" 
-              v-for="subItem in item.children" 
+              <el-menu-item :index="'/' + subItem.path +''"
+              v-for="subItem in item.children"
               :key="subItem.id" @click="savaNavPath('/' + subItem.path)">
                 <template slot="title">
                   <i class="el-icon-menu"></i>
@@ -61,7 +61,7 @@
         window.sessionStorage.clear()
         this.$router.push('/login')
       },
-      async getMenuList(){ 
+      async getMenuList(){
         //获取侧边导航数据
         const { data:res } = await this.$http.get('/menus')
         if (res.meta.status !== 200) {
@@ -69,11 +69,11 @@
         }
         this.menulist = res.data
       },
-      toggleCollapse(){ 
+      toggleCollapse(){
         //实现折叠与展开效果
         this.isCollapse = ! this.isCollapse
       },
-      savaNavPath(activePath){ 
+      savaNavPath(activePath){
         //使用sessionStorage保存侧边导航激活的状态
         window.sessionStorage.setItem('activePath',activePath)
         this.activePath = activePath//点击的时候给activePath赋值

@@ -39,19 +39,24 @@
         :page-sizes="[1, 2, 5, 10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
       <!-- 添加分类对话框 -->
-      <el-dialog title="添加分类" :visible.sync="addCateDialogVisible" width="50%">
+      <el-dialog title="添加分类" :visible.sync="addCateDialogVisible" width="50%" @close="addCateDialogClosed">
         <!-- 主体区域 -->
-        <el-form  :model="addCateForm" :rules="addCateFormRules" ref="addCateFormmRef" label-width="100px">
+        <el-form  :model="addCateForm" :rules="addCateFormRules" ref="addCateFormRef" label-width="100px">
           <el-form-item label="分类名称：" prop="cat_name">
             <el-input v-model="addCateForm.cat_name"></el-input>
           </el-form-item>
           <el-form-item label="父级分类：">
-            
+            <!-- option用来指定数据源 -->
+            <!-- props用来指定配置对象 -->
+             <el-cascader v-model="selectedKeys" :options="parentCateList"
+              :props="cascaderProps"  @change="parentCateChanged" :clearable="true"
+              >
+             </el-cascader>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="addCateDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addCateDialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="addForm">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
@@ -69,15 +74,6 @@ export default {
         type:3,
         pagenum:1,
         pagesize:5
-      },
-      // 添加分类的表单数据名称
-      addCateForm:{
-        // 将要添加的分类对象
-        cat_name:'',
-        // 父级分类的id
-        cat_id:0,
-        //分类的等级，默认是要添加的1级分类
-        cat_level:0
       },
       // 添加分类对话框的显示与隐藏
       addCateDialogVisible:false,
@@ -112,13 +108,32 @@ export default {
             template: 'ipt'
           }
         ],
+        // 添加分类的表单数据名称
+        addCateForm:{
+          // 将要添加的分类对象
+          cat_name:'',
+          // 父级分类的id
+          cat_pid:0,
+          //分类的等级，默认是要添加的1级分类
+          cat_level:0
+        },
         // 添加分类表单规则对象
         addCateFormRules:{
           cat_name:[
             { required: true, message: '请输入分类名称', trigger: 'blur' }
           ]
         },
-        parentCateList:[]
+        // 父级分类列表
+        parentCateList:[],
+        // 指定级联选择器的配资对象
+        cascaderProps:{
+          expandTrigger: 'hover',
+          value:'cat_id',
+          label:'cat_name',
+          children:'children'
+        },
+        // 选中的父级分类的Id数组
+        selectedKeys:[]
     }
   },
   created(){
@@ -139,6 +154,7 @@ export default {
       this.queryInfo.pagesize = newSize
       this.getCateList()
     },
+    // 监听pagesize变化
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage
       this.getCateList()
@@ -156,8 +172,42 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.msg)
       }
-      console.log(res.data)
       this.parentCateList = res.data
+    },
+    // 选择项发生变化时，触发这个函数
+    parentCateChanged() {
+      // 如果selectedKeys数组中的length大于0，证明选中的父级分类
+      // 反之，就说明没有选中任何父级分类
+      if (this.selectedKeys.length > 0) {
+        // 父级分类的Id
+        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
+        // 当前分类的等级赋值
+        this.addCateForm.cat_level = this.selectedKeys.length
+      } else {
+        // 父级分类的Id
+        this.addCateForm.cat_pid = 0
+        // 当前分类的等级分类赋值
+        this.addCateForm.cat_level = 0
+      }
+    },
+    addForm () {
+      this.$refs.addCateFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.post('categories',this.addCateForm)
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加分类失败！')
+        }
+        this.$message.success('添加分类成功！')
+        this.getCateList()
+        this.addCateDialogVisible = false
+      })
+    },
+    addCateDialogClosed () {
+      // 监听对话框的关闭事件，重置表单数据
+      this.$refs.addCateFormRef.resetFields()
+      this.selectedKeys = []
+      this.addCateForm.cat_level = 0
+      this.addCateForm.cat_pid = 0
     }
   }
 }
@@ -165,5 +215,8 @@ export default {
 <style lang="less" scoped>
   .treeTable {
     margin-top: 15px;
+  }
+  .el-cascader{
+    width:100%;
   }
 </style>

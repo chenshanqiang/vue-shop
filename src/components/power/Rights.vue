@@ -15,7 +15,7 @@
         </el-table-column>
         <el-table-column label="路径" prop="path">
         </el-table-column>
-        <el-table-column label="权限等级" prop="level">
+        <el-table-column label="权限等级">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.level === '0'">一级</el-tag>
             <el-tag type="success" v-else-if="scope.row.level === '1'">二级</el-tag>
@@ -30,6 +30,7 @@
 export default {
   data () {
     return {
+      // 权限列表
       rightLists:[]
     }
   },
@@ -49,5 +50,5 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  
+
 </style>

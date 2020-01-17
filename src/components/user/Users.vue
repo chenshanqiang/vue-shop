@@ -34,6 +34,7 @@
             内容进行加工处理
           -->
           <template slot-scope="scope">
+            <!-- {{scope.row}} -->
             <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
@@ -281,6 +282,8 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).catch(err => err)
+        // 如果用户确认删除，则返回值为字符串 confirm
+        // 如果用户取消删除，则返回值为字符串 cancel
         if (confirmResult !== 'confirm') {
           return this.$message.info('已取消删除')
         }

@@ -39,7 +39,7 @@
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <el-col :span='18'>
-                    <el-tag type="warning" v-for="item3 in item2.children" :key="item3.id" 
+                    <el-tag type="warning" v-for="item3 in item2.children" :key="item3.id"
                     closable @close='removeRightById(scope.row,item3.id)'>
                       {{ item3.authName }}
                     </el-tag>
@@ -67,7 +67,7 @@
       <!-- 分配权限对话框 -->
       <el-dialog width="50%" title="分配权限" :visible.sync="setRightDialogVisible"
         @close="setRightDialog">
-        <!-- 主体内容，树形控件 -->
+        <!-- 主体内容，树形控件 难点-->
         <el-tree :default-checked-keys="defKeys" ref="treeRefs" :data="rightsList" node-key="id" default-expand-all show-checkbox :props="rightProps"></el-tree>
         <span slot="footer" class="dialog-footer">
           <el-button @click="setRightDialogVisible = false">取 消</el-button>
@@ -154,7 +154,7 @@ export default {
     },
     // 获取半选和全选的权限的id
     async allotRights(){
-      // js展开符
+      // js展开运算符
       const keys = [
         ...this.$refs.treeRefs.getCheckedKeys(),
         ...this.$refs.treeRefs.getHalfCheckedKeys()
